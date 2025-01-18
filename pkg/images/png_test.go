@@ -9,7 +9,7 @@ import (
 )
 
 func TestJpegToPng(t *testing.T) {
-	image, err := os.Open("./test_images/sample_jpeg.jpg")
+	image, err := os.Open("./test_images/sample_jpeg.jpeg")
 	if err != nil {
 		t.Fatalf("Failed to read file: %v", err)
 	}

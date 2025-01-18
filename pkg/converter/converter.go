@@ -11,7 +11,8 @@ type ConversionFunc func(image io.Reader, ext string) ([]byte, error)
 
 var validConversions = map[string]map[string]ConversionFunc{
 	"jpeg": {
-		"png": images.ToPng,
+		"png":  images.ToPng,
+		"webp": images.ToWebp,
 	},
 }
 

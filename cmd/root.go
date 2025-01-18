@@ -35,8 +35,6 @@ var (
 				return errors.New("input and output file extensions must be different")
 			}
 
-			fmt.Println(inputExt, outputExt)
-
 			conv, err := converter.GetConversion(inputExt, outputExt)
 			if err != nil {
 				return err
@@ -54,7 +52,8 @@ var (
 			}
 
 			if outputPath == "" {
-				outputPath = strings.TrimSuffix(inputPath, inputExt) + outputExt
+				filename := strings.Split(filepath.Base(inputPath), ".")[0]
+				outputPath = fmt.Sprintf("%s.%s", filename, outputExt)
 			}
 
 			if err := os.WriteFile(outputPath, output, 0644); err != nil {
