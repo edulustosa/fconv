@@ -21,6 +21,21 @@ var validConversions = Conversions{
 		"tiff": images.ToTiff,
 		"gif":  images.ToGif,
 	},
+	"jpg": {
+		"png":  images.ToPng,
+		"webp": images.ToWebp,
+		"bmp":  images.ToBmp,
+		"tiff": images.ToTiff,
+		"gif":  images.ToGif,
+	},
+	"png": {
+		"jpeg": images.ToJpeg,
+		"jpg":  images.ToJpeg,
+		"webp": images.ToWebp,
+		"bmp":  images.ToBmp,
+		"tiff": images.ToTiff,
+		"gif":  images.ToGif,
+	},
 }
 
 func GetConversion(inputExt, outputExt string) (ConversionFunc, error) {
