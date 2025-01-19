@@ -7,12 +7,19 @@ import (
 	"github.com/edulustosa/fconv/pkg/images"
 )
 
-type ConversionFunc func(image io.Reader, ext string) ([]byte, error)
+type (
+	ConversionFunc func(image io.Reader, ext string) ([]byte, error)
 
-var validConversions = map[string]map[string]ConversionFunc{
+	Conversions map[string]map[string]ConversionFunc
+)
+
+var validConversions = Conversions{
 	"jpeg": {
 		"png":  images.ToPng,
 		"webp": images.ToWebp,
+		"bmp":  images.ToBmp,
+		"tiff": images.ToTiff,
+		"gif":  images.ToGif,
 	},
 }
 
