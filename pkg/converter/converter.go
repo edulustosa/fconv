@@ -86,6 +86,7 @@ var validConversions = Conversions{
 	},
 	"csv": {
 		"xlsx": documents.ToXlsx,
+		"json": documents.ToJson,
 	},
 }
 

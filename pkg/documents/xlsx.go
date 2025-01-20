@@ -20,7 +20,6 @@ func ToXlsx(file io.Reader, ext string) ([]byte, error) {
 
 func csvToXlsx(file io.Reader) ([]byte, error) {
 	csvReader := csv.NewReader(file)
-	csvReader.Comma = ';'
 
 	xlsxFile := xlsx.NewFile()
 	sheet, err := xlsxFile.AddSheet("Sheet1")
