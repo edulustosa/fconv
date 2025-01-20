@@ -4,6 +4,7 @@ import (
 	"errors"
 	"io"
 
+	"github.com/edulustosa/fconv/pkg/documents"
 	"github.com/edulustosa/fconv/pkg/images"
 )
 
@@ -82,6 +83,9 @@ var validConversions = Conversions{
 		"bmp":  images.ToBmp,
 		"tiff": images.ToTiff,
 		"tif":  images.ToTiff,
+	},
+	"csv": {
+		"xlsx": documents.ToXlsx,
 	},
 }
 
