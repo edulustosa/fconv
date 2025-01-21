@@ -2,6 +2,7 @@ package converter
 
 import (
 	"errors"
+	"fmt"
 	"io"
 
 	"github.com/edulustosa/fconv/pkg/documents"
@@ -11,89 +12,37 @@ import (
 type (
 	ConversionFunc func(image io.Reader, ext string) ([]byte, error)
 
-	Conversions map[string]map[string]ConversionFunc
+	Conversions map[string][]string
+
+	Decoders map[string]ConversionFunc
 )
 
 var validConversions = Conversions{
-	"jpeg": {
-		"png":  images.ToPng,
-		"webp": images.ToWebp,
-		"bmp":  images.ToBmp,
-		"tiff": images.ToTiff,
-		"gif":  images.ToGif,
-		"tif":  images.ToTiff,
-	},
-	"jpg": {
-		"png":  images.ToPng,
-		"webp": images.ToWebp,
-		"bmp":  images.ToBmp,
-		"tiff": images.ToTiff,
-		"gif":  images.ToGif,
-		"tif":  images.ToTiff,
-	},
-	"png": {
-		"jpeg": images.ToJpeg,
-		"jpg":  images.ToJpeg,
-		"webp": images.ToWebp,
-		"bmp":  images.ToBmp,
-		"tiff": images.ToTiff,
-		"gif":  images.ToGif,
-		"tif":  images.ToTiff,
-	},
-	"webp": {
-		"jpeg": images.ToJpeg,
-		"jpg":  images.ToJpeg,
-		"png":  images.ToPng,
-		"bmp":  images.ToBmp,
-		"tiff": images.ToTiff,
-		"gif":  images.ToGif,
-		"tif":  images.ToTiff,
-	},
-	"bmp": {
-		"jpeg": images.ToJpeg,
-		"jpg":  images.ToJpeg,
-		"png":  images.ToPng,
-		"webp": images.ToWebp,
-		"tiff": images.ToTiff,
-		"gif":  images.ToGif,
-		"tif":  images.ToTiff,
-	},
-	"tiff": {
-		"jpeg": images.ToJpeg,
-		"jpg":  images.ToJpeg,
-		"png":  images.ToPng,
-		"webp": images.ToWebp,
-		"bmp":  images.ToBmp,
-		"gif":  images.ToGif,
-	},
-	"tif": {
-		"jpeg": images.ToJpeg,
-		"jpg":  images.ToJpeg,
-		"png":  images.ToPng,
-		"webp": images.ToWebp,
-		"bmp":  images.ToBmp,
-		"gif":  images.ToGif,
-		"tif":  images.ToTiff,
-	},
-	"gif": {
-		"jpeg": images.ToJpeg,
-		"jpg":  images.ToJpeg,
-		"png":  images.ToPng,
-		"webp": images.ToWebp,
-		"bmp":  images.ToBmp,
-		"tiff": images.ToTiff,
-		"tif":  images.ToTiff,
-	},
-	"csv": {
-		"xlsx": documents.ToXlsx,
-		"json": documents.ToJson,
-	},
-	"json": {
-		"yaml": documents.ToYaml,
-	},
-	"yaml": {
-		"json": documents.ToJson,
-	},
+	"jpeg": {"png", "webp", "bmp", "tiff", "gif", "tif"},
+	"jpg":  {"png", "webp", "bmp", "tiff", "gif", "tif"},
+	"png":  {"jpeg", "jpg", "webp", "bmp", "tiff", "gif", "tif"},
+	"webp": {"jpeg", "jpg", "png", "bmp", "tiff", "gif", "tif"},
+	"bmp":  {"jpeg", "jpg", "png", "webp", "tiff", "gif", "tif"},
+	"tiff": {"jpeg", "jpg", "png", "webp", "bmp", "gif"},
+	"tif":  {"jpeg", "jpg", "png", "webp", "bmp", "gif"},
+	"gif":  {"jpeg", "jpg", "png", "webp", "bmp", "tiff", "tif"},
+	"csv":  {"xlsx", "json"},
+	"json": {"yaml"},
+	"yaml": {"json"},
+}
+
+var decoders = Decoders{
+	"jpeg": images.ToJpeg,
+	"jpg":  images.ToJpeg,
+	"png":  images.ToPng,
+	"webp": images.ToWebp,
+	"bmp":  images.ToBmp,
+	"tiff": images.ToTiff,
+	"tif":  images.ToTiff,
+	"gif":  images.ToGif,
+	"xlsx": documents.ToXlsx,
+	"json": documents.ToJson,
+	"yaml": documents.ToYaml,
 }
 
 func GetConversion(inputExt, outputExt string) (ConversionFunc, error) {
@@ -102,10 +51,12 @@ func GetConversion(inputExt, outputExt string) (ConversionFunc, error) {
 		return nil, errors.New("unsupported input file extension")
 	}
 
-	conversionFunc, ok := conversionsSupported[outputExt]
-	if !ok {
-		return nil, errors.New("unsupported output file extension")
+	for _, conversion := range conversionsSupported {
+		if conversion == outputExt {
+			conversionFunc := decoders[outputExt]
+			return conversionFunc, nil
+		}
 	}
 
-	return conversionFunc, nil
+	return nil, fmt.Errorf("conversion from %s to %s is not supported", inputExt, outputExt)
 }
