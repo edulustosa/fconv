@@ -10,6 +10,7 @@ require (
 	github.com/spf13/cobra v1.8.1
 	github.com/tealeg/xlsx v1.0.5
 	golang.org/x/image v0.23.0
+	gopkg.in/yaml.v3 v3.0.1
 )
 
 require (

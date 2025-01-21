@@ -108,6 +108,19 @@ var (
 	}
 )
 
+func initialModel(inputFile, outputFile string) model {
+	s := spinner.New()
+	s.Spinner = spinner.Dot
+	s.Style = lipgloss.NewStyle().Foreground(lipgloss.Color("adb5bd"))
+
+	return model{
+		spinner:    s,
+		status:     converting,
+		inputFile:  inputFile,
+		outputFile: outputFile,
+	}
+}
+
 func (m model) Init() tea.Cmd {
 	return m.spinner.Tick
 }
@@ -122,19 +135,6 @@ func (m model) View() string {
 		return errorStyle.Render(fmt.Sprintf("✗ Error: %v\n", m.err))
 	default:
 		return ""
-	}
-}
-
-func initialModel(inputFile, outputFile string) model {
-	s := spinner.New()
-	s.Spinner = spinner.Dot
-	s.Style = lipgloss.NewStyle().Foreground(lipgloss.Color("adb5bd"))
-
-	return model{
-		spinner:    s,
-		status:     converting,
-		inputFile:  inputFile,
-		outputFile: outputFile,
 	}
 }
 

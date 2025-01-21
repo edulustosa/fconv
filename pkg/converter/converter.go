@@ -88,6 +88,12 @@ var validConversions = Conversions{
 		"xlsx": documents.ToXlsx,
 		"json": documents.ToJson,
 	},
+	"json": {
+		"yaml": documents.ToYaml,
+	},
+	"yaml": {
+		"json": documents.ToJson,
+	},
 }
 
 func GetConversion(inputExt, outputExt string) (ConversionFunc, error) {
