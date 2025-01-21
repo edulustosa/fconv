@@ -53,7 +53,7 @@ func csvToJson(file io.Reader) ([]byte, error) {
 }
 
 func yamlToJson(file io.Reader) ([]byte, error) {
-	var yamlDoc map[string]any
+	var yamlDoc any
 	if err := yaml.NewDecoder(file).Decode(&yamlDoc); err != nil {
 		return nil, fmt.Errorf("failed to decode yaml: %w", err)
 	}

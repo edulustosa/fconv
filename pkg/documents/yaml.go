@@ -18,7 +18,7 @@ func ToYaml(file io.Reader, ext string) ([]byte, error) {
 }
 
 func jsonToYaml(file io.Reader) ([]byte, error) {
-	var jsonDoc map[string]any
+	var jsonDoc any
 	if err := json.NewDecoder(file).Decode(&jsonDoc); err != nil {
 		return nil, fmt.Errorf("failed to decode json: %w", err)
 	}
