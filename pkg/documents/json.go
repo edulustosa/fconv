@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 
+	"github.com/sbabiv/xml2map"
 	"gopkg.in/yaml.v3"
 )
 
@@ -15,6 +16,8 @@ func ToJson(file io.Reader, ext string) ([]byte, error) {
 		return csvToJson(file)
 	case "yaml", "yml":
 		return yamlToJson(file)
+	case "xml":
+		return xmlToJson(file)
 	}
 
 	return nil, fmt.Errorf("unsupported file extension: %s to json", ext)
@@ -64,4 +67,18 @@ func yamlToJson(file io.Reader) ([]byte, error) {
 	}
 
 	return jsonBytes, nil
+}
+
+func xmlToJson(file io.Reader) ([]byte, error) {
+	xmlDoc, err := xml2map.NewDecoder(file).Decode()
+	if err != nil {
+		return nil, fmt.Errorf("failed to decode xml: %w", err)
+	}
+
+	jsonDoc, err := json.MarshalIndent(xmlDoc, "", "  ")
+	if err != nil {
+		return nil, fmt.Errorf("failed to decode to json: %w", err)
+	}
+
+	return jsonDoc, nil
 }

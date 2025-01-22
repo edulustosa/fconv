@@ -7,6 +7,7 @@ require (
 	github.com/charmbracelet/bubbletea v1.2.4
 	github.com/charmbracelet/lipgloss v1.0.0
 	github.com/kolesa-team/go-webp v1.0.4
+	github.com/sbabiv/xml2map v1.2.1
 	github.com/spf13/cobra v1.8.1
 	github.com/tealeg/xlsx v1.0.5
 	golang.org/x/image v0.23.0

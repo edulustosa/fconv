@@ -26,9 +26,10 @@ var validConversions = Conversions{
 	"tiff": {"jpeg", "jpg", "png", "webp", "bmp", "gif"},
 	"tif":  {"jpeg", "jpg", "png", "webp", "bmp", "gif"},
 	"gif":  {"jpeg", "jpg", "png", "webp", "bmp", "tiff", "tif"},
-	"csv":  {"xlsx", "json"},
-	"json": {"yaml"},
+	"csv":  {"xlsx", "json", "yaml", "yml"},
+	"json": {"yaml", "yml"},
 	"yaml": {"json"},
+	"xml":  {"json", "yaml", "yml"},
 }
 
 var decoders = Decoders{
@@ -43,6 +44,7 @@ var decoders = Decoders{
 	"xlsx": documents.ToXlsx,
 	"json": documents.ToJson,
 	"yaml": documents.ToYaml,
+	"yml":  documents.ToYaml,
 }
 
 func GetConversion(inputExt, outputExt string) (ConversionFunc, error) {
