@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"sync"
 
 	"github.com/charmbracelet/bubbles/spinner"
 	tea "github.com/charmbracelet/bubbletea"
@@ -54,7 +55,7 @@ var decoders = Decoders{
 	"yml":  documents.ToYaml,
 }
 
-func GetConversion(inputExt, outputExt string) (ConversionFunc, error) {
+func getConversion(inputExt, outputExt string) (ConversionFunc, error) {
 	conversionsSupported, ok := validConversions[inputExt]
 	if !ok {
 		return nil, errors.New("unsupported input file extension")
@@ -90,32 +91,11 @@ type conversionMsg struct {
 	err error
 }
 
-type Conversion struct {
-	InputPath  string
-	OutputPath string
-	InputExt   string
-	OutputExt  string
-}
-
-func ConvertDir(inputDir, outputExt string) {
-	filepath.WalkDir(inputDir, func(path string, d fs.DirEntry, err error) error {
-		if err != nil {
-			return err
-		}
-
-		if d.IsDir() {
-			return nil
-		}
-
-		return nil
-	})
-}
-
 func ConvertFile(inputPath, outputPath string) error {
 	inputExt := getFileExtension(inputPath)
 	outputExt := getFileExtension(outputPath)
 
-	conversionFunc, err := GetConversion(inputExt, outputExt)
+	conversionFunc, err := getConversion(inputExt, outputExt)
 	if err != nil {
 		return err
 	}
@@ -147,6 +127,34 @@ func ConvertFile(inputPath, outputPath string) error {
 	}
 
 	return nil
+}
+
+func ConvertDir(inputDir, outputExt string) {
+	var wg sync.WaitGroup
+
+	filepath.WalkDir(inputDir, func(path string, d fs.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
+
+		if d.IsDir() {
+			return nil
+		}
+
+		filename := strings.Split(filepath.Base(path), ".")[0]
+		outputPath := fmt.Sprintf("%s.%s", filename, outputExt)
+
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+
+			ConvertFile(path, outputPath)
+		}()
+
+		return nil
+	})
+
+	wg.Wait()
 }
 
 var (
