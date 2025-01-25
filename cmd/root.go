@@ -17,7 +17,10 @@ var (
 	rootCmd = &cobra.Command{
 		Use:   "fconv [file]",
 		Short: "Converts a file from one format to another",
-		Args:  cobra.MinimumNArgs(1),
+		Example: `fconv input.json output.yaml
+fconv input.png -o jpg	
+fconv ./dir -o json`,
+		Args: cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			inputPath := args[0]
 			info, err := os.Stat(inputPath)
@@ -46,11 +49,7 @@ var (
 				return errors.New("output file extension or path is required")
 			}
 
-			if err := converter.ConvertFile(inputPath, outputPath); err != nil {
-				return err
-			}
-
-			return nil
+			return converter.ConvertFile(inputPath, outputPath)
 		},
 	}
 )

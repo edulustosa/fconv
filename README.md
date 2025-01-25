@@ -1,6 +1,6 @@
 # fconv
 
-A file converter that converts files from one format to another.
+A file converter CLI that easily converts files from one format to another.
 
 ## Features
 
